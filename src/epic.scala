@@ -1,3 +1,3 @@
 object epic {
-  println("patrick sucks eggs")
+  println("patrick really sucks eggs")
 }

@@ -1,3 +1,3 @@
 object epic {
-  println("epic")
+  println("epic to the max")
 }

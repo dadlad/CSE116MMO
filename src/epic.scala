@@ -1,0 +1,3 @@
+object epic {
+  println("epic")
+}

@@ -1,3 +1,3 @@
 object epic {
-  println("big epic")
+  println("the big epic")
 }

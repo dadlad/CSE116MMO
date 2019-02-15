@@ -1,3 +1,3 @@
 object epic {
-  println("kyle, just use the rope")
+  println("kyle, please just use the rope")
 }

@@ -41,7 +41,7 @@ object Database {
     val statement = connection.prepareStatement("INSERT INTO players VALUE (?, ?, ?, ?, ?, ?)")
 
     statement.setString(1, username)
-    statement.setDouble(2, 0.0)
+    statement.setInt(2, 0.0)
     statement.setInt(3, 0)
     statement.setInt(4, 0)
     statement.setInt(5, 0)
@@ -49,13 +49,10 @@ object Database {
 
     statement.execute()
   }
+  def saveGame(username: String, HP: Int, speed: Int, excavators: Int, mines: Int, lastUpdate: Long): Unit = {
+    val statement = connection.prepareStatement("UPDATE players SET HP = ?, speed = ?, excavators = ?, mines = ?, lastUpdate = ? WHERE username = ?")
 
-
-  def saveGame(username: String, gold: Double, shovels: Int, excavators: Int, mines: Int, lastUpdate: Long): Unit = {
-    val statement = connection.prepareStatement("UPDATE players SET gold = ?, shovels = ?, excavators = ?, mines = ?, lastUpdate = ? WHERE username = ?")
-
-    statement.setDouble(1, gold)
-    statement.setInt(2, shovels)
+    statement.setInt(1, HP)
     statement.setInt(3, excavators)
     statement.setInt(4, mines)
     statement.setLong(5, lastUpdate)
@@ -63,8 +60,6 @@ object Database {
 
     statement.execute()
   }
-
-
   def loadGame(username: String, game: Game): Unit = {
     val statement = connection.prepareStatement("SELECT * FROM players WHERE username=?")
     statement.setString(1, username)
@@ -77,6 +72,4 @@ object Database {
     game.equipment("mine").numberOwned = result.getInt("mines")
     game.lastUpdateTime = result.getLong("lastUpdate")
   }
-
-
 }

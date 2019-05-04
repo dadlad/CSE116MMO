@@ -1,5 +1,0 @@
-package Player
-
-class Archer {
-
-}

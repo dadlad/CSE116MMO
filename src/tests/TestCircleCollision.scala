@@ -24,7 +24,7 @@ class TestCircleCollision extends FunSuite {
     player3.xLocation = 50
     player3.yLocation = 30
     enemy3.xLocation = 100
-    enemy3.yLocation = 1500
+    enemy3.yLocation = 150
 
     assert(game.detectCollision(player1,enemy1))
     assert(!game.detectCollision(player2,enemy2))

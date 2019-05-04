@@ -30,5 +30,4 @@ class Game {
     val cornerDistance = Math.pow(circleDistanceX - attack.width / 2, 2) + Math.pow(circleDistanceY - attack.height / 2, 2)
     cornerDistance <= Math.pow(enemy.radius, 2)
   }
-
 }

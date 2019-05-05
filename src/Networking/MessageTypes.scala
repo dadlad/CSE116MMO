@@ -7,7 +7,6 @@ case class GameState(gameState: String)
 
 // Received by GameActor
 case object UpdateGame
-case object TowersFire
 case class AddPlayer(username: String)
 case class RemovePlayer(username: String)
 case class MovePlayer(username: String, x: Double, y:Double)

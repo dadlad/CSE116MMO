@@ -1,12 +1,15 @@
 package theGame
-import Enemies.Enemy
-import Player._
-import Player.Attacks._
 
 class Game {
-
+  val playerSize: Double = 0.6
+  val players: Map[String, Player] = Map()
+  val player: Player = new Player(player.location, player.velocity)
+  val Width: Double = 20
+  val Height: Double = 30
+  var Line: Double = -0.3
   //circle on circle collision (orc attack)
-  def detectCollision(player: Classes, enemy: Enemy): Boolean = {
+
+  def detectCollision(player: Player, pla): Boolean = {
     Math.pow(enemy.xLocation - player.xLocation, 2) + (player.xLocation - enemy.yLocation) <= Math.pow(player.radius + enemy.radius, 2)
   }
 

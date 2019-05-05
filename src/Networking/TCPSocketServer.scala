@@ -39,5 +39,18 @@ class TCPSocketServer(gameActor: ActorRef) extends Actor  {
     case gs: GameState =>
       this.webServers.foreach((client: ActorRef) => client ! Write(ByteString(gs.gameState + delimiter)))
   }
+}
+object TCPSocketServer {
+  def main(args: Array[String]): Unit = {
+    val actorSystem = ActorSystem()
+    import actorSystem.dispatcher
 
+    import scala.concurrent.duration._
+
+    val gameActor = actorSystem.actorOf(Props(classOf[GameActor]))
+    val server = actorSystem.actorOf(Props(classOf[TCPSocketServer], gameActor))
+
+    actorSystem.scheduler.schedule(16.milliseconds, 32.milliseconds, gameActor, UpdateGame)
+    actorSystem.scheduler.schedule(32.milliseconds, 32.milliseconds, server, SendGameState)
+  }
 }

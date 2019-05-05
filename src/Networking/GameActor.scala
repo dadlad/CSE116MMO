@@ -11,6 +11,4 @@ class GameActor extends Actor {
     case message: MovePlayer => game.players(message.username).move(new PhysicsVector(message.x, message.y))
     case message: StopPlayer => game.players(message.username).stop()
   }
-
-
 }

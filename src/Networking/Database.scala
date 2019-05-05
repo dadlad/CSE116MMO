@@ -41,7 +41,7 @@ object Database {
     val statement = connection.prepareStatement("INSERT INTO players VALUE (?, ?, ?, ?, ?, ?)")
 
     statement.setString(1, username)
-    statement.setInt(2, 0.0)
+    statement.setInt(2, 0)
     statement.setInt(3, 0)
     statement.setInt(4, 0)
     statement.setInt(5, 0)

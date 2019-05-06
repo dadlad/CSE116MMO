@@ -4,14 +4,12 @@ import theGame.Game
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.paint.Color
-import javafx.scene.input.KeyEvent
 import scalafx.animation.AnimationTimer
 import scalafx.scene.shape.Circle
 import scalafx.scene.{Group, Scene}
 
 //this is the actual game gui
 //this will be opened after the player hits a "create character" button on the character selection screen
-
 object MapGui extends JFXApp {
   var lastUpdateTime: Long = System.nanoTime()
   val game: Game = new Game
@@ -48,8 +46,6 @@ object MapGui extends JFXApp {
     this.title = "Epic Game"
     scene = new Scene(windowWidth, windowHeight) {
       content = List(sceneGraphics)
-      addEventHandler(KeyEvent.ANY, new WASDInputs(game.player))
-      addEventHandler(KeyEvent.ANY, new ArrowInputs(game.player))
     }
   }
   val update: Long => Unit = (time: Long) => {

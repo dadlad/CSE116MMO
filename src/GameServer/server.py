@@ -19,6 +19,9 @@ scala_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 scala_socket.connect(('localhost', 8000))
 
 
+delimiter = "~"
+
+
 def listen_to_scala(the_socket):
     delimiter = "~"
     buffer = ""
@@ -34,15 +37,14 @@ Thread(target=listen_to_scala, args=(scala_socket,)).start()
 
 
 def get_from_scala(data):
-    message = json.loads(data)
-    username = message["username"]
-    user_socket = usernameToSid.get(username, None)
-    if user_socket:
-        socket_server.emit('message', data, room=user_socket)
+    socket_server.emit('gameState', data, broadcast=True)
 
 
 def send_to_scala(data):
-    scala_socket.sendall(json.dumps(data).encode())
+    scala_socket.sendall((json.dumps(data) + delimiter).encode())
+
+
+Thread(target=listen_to_scala, args=(scala_socket,)).start()
 
 
 @socket_server.on('connect')
@@ -107,7 +109,7 @@ def game():
         username = request.form.get('username')
     else:
         username = "guest" + str(randint(0, 100000))
-    return render_template('game.html', username=username)
+    return render_template('chat.html', username=username)
 
 
 @app.route('/<path:filename>')

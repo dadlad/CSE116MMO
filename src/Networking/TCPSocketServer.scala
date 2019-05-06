@@ -31,6 +31,7 @@ class TCPSocketServer(gameActor: ActorRef) extends Actor  {
       while (buffer.contains(delimiter)) {
         val curr = buffer.substring(0, buffer.indexOf(delimiter))
         buffer = buffer.substring(buffer.indexOf(delimiter) + 1)
+        handleMessageFromWebServer(curr)
       }
 
     case SendGameState =>
@@ -38,6 +39,21 @@ class TCPSocketServer(gameActor: ActorRef) extends Actor  {
 
     case gs: GameState =>
       this.webServers.foreach((client: ActorRef) => client ! Write(ByteString(gs.gameState + delimiter)))
+  }
+  def handleMessageFromWebServer(messageString:String):Unit = {
+    val message: JsValue = Json.parse(messageString)
+    val username = (message \ "username").as[String]
+    val messageType = (message \ "action").as[String]
+
+    messageType match {
+      case "connected" => gameActor ! AddPlayer(username)
+      case "disconnected" => gameActor ! RemovePlayer(username)
+      case "move" =>
+        val x = (message \ "x").as[Double]
+        val y = (message \ "y").as[Double]
+        gameActor ! MovePlayer(username, x, y)
+      case "stop" => gameActor ! StopPlayer(username)
+    }
   }
 }
 object TCPSocketServer {

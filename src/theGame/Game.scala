@@ -1,14 +1,14 @@
 package theGame
 
 class Game {
-  val playerSize: Double = 0.9
+  var lastUpdateTime: Long = System.nanoTime()
+  var playerSize: Double = 30.0
   val players: Map[String, Player] = Map()
   val player: Player = new Player(player.location, player.velocity)
   val Width: Double = 20
   val Height: Double = 30
   var Line: Double = -0.3
   //circle on circle collision (orc attack)
-
   def detectCollision(player: Player, player2: Player, boundary: Boundary): Boolean = {
    if(player.location.x == player2.location.x && player.location.y == player2.location.y){
      return false
@@ -40,6 +40,10 @@ class Game {
     val bUp = boundary.start.y.min(boundary.end.y)
     val bDown = boundary.start.y.max(boundary.end.y)
     ((ix >= objLeft - Physics.EPSILON && ix <= objRight + Physics.EPSILON) && (iy >= objUp-Physics.EPSILON && iy <= objDown+Physics.EPSILON)) && ((ix >= bLeft -Physics.EPSILON&& ix <= bRight+Physics.EPSILON) && (iy >= bUp-Physics.EPSILON && iy <= bDown+Physics.EPSILON))
+  }
+  def addPlayer(name: String): Unit = {
+    val player = new Player(new PhysicsVector(0,4), new PhysicsVector(0, 0))
+
   }
   def detectHit(enemy: Enemy, attack: Attack): Boolean = {
     val circleDistanceX = Math.abs(enemy.xLocation - attack.xLocation)

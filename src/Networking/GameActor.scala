@@ -1,6 +1,7 @@
 package Networking
 
 import akka.actor.{Actor, ActorRef, PoisonPill, Props}
+import theGame.PhysicsVector
 import theGame.Game
 class GameActor extends Actor {
   var players: Map[String, ActorRef] = Map()

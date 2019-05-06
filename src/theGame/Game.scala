@@ -1,7 +1,7 @@
 package theGame
 
 class Game {
-  val playerSize: Double = 0.6
+  val playerSize: Double = 0.9
   val players: Map[String, Player] = Map()
   val player: Player = new Player(player.location, player.velocity)
   val Width: Double = 20

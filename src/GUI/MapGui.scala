@@ -1,12 +1,12 @@
 package GUI
-
+import theGame.PhysicsVector
 import theGame.Game
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.paint.Color
 import javafx.scene.input.KeyEvent
 import scalafx.animation.AnimationTimer
-import scalafx.scene.shape.{Circle}
+import scalafx.scene.shape.Circle
 import scalafx.scene.{Group, Scene}
 
 //this is the actual game gui
@@ -19,10 +19,14 @@ object MapGui extends JFXApp {
   val scaleFactor: Double = 60.0
   val windowWidth: Double = game.Width * scaleFactor
   val windowHeight: Double = game.Height * scaleFactor
-  val playerDesign: Circle = playersDesign(game.player.location.x, game.player.location.y, Color.DarkRed)
+  var playerDesign: Circle = playersDesign(game.player.location.x, game.player.location.y, Color.DarkRed)
   var sceneGraphics: Group = new Group {}
   sceneGraphics.children.add(playerDesign)
-
+  for(player <- game.players.values){
+    val PlayerDesign = playersDesign(player.location.x, player.location.y, Color.DarkRed)
+    playerDesign = PlayerDesign
+    sceneGraphics.children.add(playerDesign)
+  }
   def PutX(gameX: Double, width: Double): Double = {
     (gameX - width / 2.0) * scaleFactor
   }
@@ -33,8 +37,12 @@ object MapGui extends JFXApp {
     new Circle {
       translateX = PutX(xLocation, playerDesignSize)
       translateY = PutY(yLocation, playerDesignSize)
+      radius = 10
       fill = color
     }
+  }
+  def Distance(v1: PhysicsVector, v2: PhysicsVector): Double = {
+    Math.sqrt(Math.pow(v1.x - v2.x, 2.0) + Math.pow(v1.z - v2.z, 2.0))
   }
   this.stage = new PrimaryStage {
     this.title = "Epic Game"
@@ -50,5 +58,6 @@ object MapGui extends JFXApp {
     game.update(dt)
 
     playerDesign.translateX.value = PutX(game.player.location.x, playerDesignSize)
+    playerDesign.translateY.value = PutY(game.player.location.y, playerDesignSize)
   }
 }

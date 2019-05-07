@@ -58,7 +58,7 @@ object Physics {
     //    m1x + b1 = m2x + b2
     //    m1x - m2x = b2 - b1
     //    x(m1x - m2) = b2 - b1
-    //    x = (b2 - b1) / (m1x - m2)
+    //    x = (b2 - b1) / (m1x - m2) 2
 
     val ix: Double = (bBound - bObj) / (mObj - mBound)
     val iy: Double = ix * mObj + bObj

@@ -1,5 +1,5 @@
-package theGame
-
+package physics
+import theGame.{PhysicalObject, Boundary}
 object Physics {
 
   val EPSILON: Double = 0.000000001

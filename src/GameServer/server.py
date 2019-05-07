@@ -23,7 +23,6 @@ delimiter = "~"
 
 
 def listen_to_scala(the_socket):
-    delimiter = "~"
     buffer = ""
     while True:
         buffer += the_socket.recv(1024).decode()
@@ -82,34 +81,13 @@ def key_state(jsonKeyStates):
     send_to_scala(message)
 
 
-@socket_server.on('clickGold')
-def click_gold():
-    username = sidToUsername[request.sid]
-    print(username + " clicked gold")
-    message = {"username": username, "action": "clickGold"}
-    send_to_scala(message)
-
-
-@socket_server.on('buy')
-def buy_equipment(equipmentID):
-    username = sidToUsername[request.sid]
-    print(username + " trying to buy " + equipmentID)
-    message = {"username": username, "action": "buyEquipment", "equipmentID": equipmentID}
-    send_to_scala(message)
-
-
-@app.route('/')
-def index():
-    return send_from_directory('static', 'index.html')
-
-
 @app.route('/game', methods=["POST", "GET"])
 def game():
     if request.method == "POST":
         username = request.form.get('username')
     else:
         username = "guest" + str(randint(0, 100000))
-    return render_template('chat.html', username=username)
+    return render_template('home.html', username=username)
 
 
 @app.route('/<path:filename>')
@@ -117,4 +95,5 @@ def static_files(filename):
     return send_from_directory('static', filename)
 
 
+print("Listening on port 8080")
 socket_server.run(app, port=8080)

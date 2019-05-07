@@ -1,7 +1,7 @@
 package theGame
-
-class Player(location: PhysicsVector, velocity: PhysicsVector) extends PhysicalObject(location, velocity) {
-  val speed: Double = 4.0
+import physics.PhysicsVector
+class Player(Location: PhysicsVector, Velocity: PhysicsVector) extends PhysicalObject(Location, Velocity) {
+  val speed: Double = 10.0
   def move(direction: PhysicsVector){
     val normalDirection = direction.normal2d()
     this.velocity = new PhysicsVector(normalDirection.x * speed, normalDirection.y * speed)
@@ -9,5 +9,6 @@ class Player(location: PhysicsVector, velocity: PhysicsVector) extends PhysicalO
   def stop(): Unit ={
     this.velocity = new PhysicsVector(0, 0)
   }
+
 
 }

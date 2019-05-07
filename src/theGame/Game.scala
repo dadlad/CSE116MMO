@@ -1,68 +1,67 @@
 package theGame
-
+import physics.{Physics, PhysicsVector, World}
+import play.api.libs.json.{JsValue, Json}
 class Game {
+  val world: World = new World(10)
   var lastUpdateTime: Long = System.nanoTime()
   var playerSize: Double = 30.0
-  val players: Map[String, Player] = Map()
+  var grid: Grid = new Grid
+  var blobs: List[Blob] = List()
+  var players: Map[String, Player] = Map()
   val player: Player = new Player(player.location, player.velocity)
   val Width: Double = 20
   val Height: Double = 30
   var Line: Double = -0.3
-  //circle on circle collision (orc attack)
-  def detectCollision(player: Player, player2: Player, boundary: Boundary): Boolean = {
-   if(player.location.x == player2.location.x && player.location.y == player2.location.y){
-     return false
-   }
-    val mObj = Physics.slope(player.location, player2.location)
-    val bObj = Physics.yIntercept(player.location, mObj)
-
-    val mBound = Physics.slope(boundary.start, boundary.end)
-    val bBound = Physics.yIntercept(boundary.start, mBound)
-    if (Physics.equalDoubles(mObj, mBound)){
-      return false
-    }
-
-    //    m1x + b1 = m2x + b2
-    //    m1x - m2x = b2 - b1
-    //    x(m1x - m2) = b2 - b1
-    //    x = (b2 - b1) / (m1x - m2)
-
-    val ix: Double = (bBound - bObj) / (mObj - mBound)
-    val iy: Double = ix * mObj + bObj
-    val iy_redundant: Double = ix * mBound + bBound
-    val objLeft = player.location.x.min(player2.location.x)
-    val objRight = player.location.x.max(player2.location.x)
-
-    val objUp = player.location.y.min(player2.location.y)
-    val objDown = player.location.y.max(player2.location.y)
-    val bLeft = boundary.start.x.min(boundary.end.x)
-    val bRight = boundary.start.x.max(boundary.end.x)
-    val bUp = boundary.start.y.min(boundary.end.y)
-    val bDown = boundary.start.y.max(boundary.end.y)
-    ((ix >= objLeft - Physics.EPSILON && ix <= objRight + Physics.EPSILON) && (iy >= objUp-Physics.EPSILON && iy <= objDown+Physics.EPSILON)) && ((ix >= bLeft -Physics.EPSILON&& ix <= bRight+Physics.EPSILON) && (iy >= bUp-Physics.EPSILON && iy <= bDown+Physics.EPSILON))
+  def placeBlob(x: Int, y: Int): Unit = {
+    blobs = new Blob(x, y) :: blobs
   }
-  def addPlayer(name: String): Unit = {
-    val player = new Player(new PhysicsVector(0,4), new PhysicsVector(0, 0))
+  def spawn(): PhysicsVector = {
+    new PhysicsVector(grid.Spawn.x + 0.5, grid.Spawn.y + 0.5)
+  }
+  def addPlayer(user: String): Unit = {
+    val player = new Player(spawn(), new PhysicsVector(0, 0))
+    players = players + (user -> player)
+    world.objects = player :: world.objects
+  }
+  def removePlayer(user: String): Unit = {
+    players(user).destroy()
+    players -= user
+  }
+  def gameState(): String = {
+    val gameState: Map[String, JsValue] = Map(
+    "gridSize" -> Json.toJson(Map("x" -> grid.gridWidth, "y" -> grid.gridHeight)),
+    "spawn" -> Json.toJson(Map("x" -> grid.Spawn.x, "y" -> grid.Spawn.y)),
+    "blobs" -> Json.toJson(this.blobs.map({ b => Json.toJson(Map("x" -> b.x, "y" -> b.y))})),
+    "players" -> Json.toJson(this.players.map({ case (i, p) => Json.toJson(Map(
+      "x" -> Json.toJson(p.location.x),
+      "y" -> Json.toJson(p.location.y),
+      "v_x" -> Json.toJson(p.velocity.x),
+      "v_y" -> Json.toJson(p.velocity.y),
+      "id" -> Json.toJson(i)))})),
+    "playerSize" -> Json.toJson(playerSize)
+    )
+    Json.stringify(Json.toJson(gameState))
+  }
+  def update(): Unit = {
+    val time: Long = System.nanoTime()
+    val dt = (time - this.lastUpdateTime) / 1000000000.0
+    Physics.updateWorld(this.world, dt)
+    playerCollision(new Player(player.location, player.velocity), new Player(player.location, player.velocity))
+    this.lastUpdateTime = time
 
   }
-  def detectHit(enemy: Enemy, attack: Attack): Boolean = {
-    val circleDistanceX = Math.abs(enemy.xLocation - attack.xLocation)
-    val circleDistanceY = Math.abs(enemy.yLocation - attack.yLocation)
-    if (circleDistanceX > (attack.width / 2 + enemy.radius)) {
-      return false
+  def playerCollision(player: Player, player2: Player): Unit = {
+    for(player <- players.values){
+      for(player2 <- players.values){
+        if(player.location.distance2d(player2.location) < playerSize){
+          playerSize = playerSize + 30.0
+          player2.destroy()
+        }
+      }
     }
-    if (circleDistanceY > (attack.height / 2 + enemy.radius)) {
-      return false
-    }
-    if (circleDistanceX <= (attack.width / 2)) {
-      return true
-    }
-    if (circleDistanceY <= (attack.height / 2)) {
-      return true
-    }
-    val cornerDistance = Math.pow(circleDistanceX - attack.width / 2, 2) + Math.pow(circleDistanceY - attack.height / 2, 2)
-    cornerDistance <= Math.pow(enemy.radius, 2)
   }
 }
 
-  // square on circle collision (melee/projectile hit boxes are a square)
+
+
+// square on circle collision (melee/projectile hit boxes are a square)

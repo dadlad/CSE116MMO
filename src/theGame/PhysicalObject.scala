@@ -1,5 +1,5 @@
 package theGame
-
+import physics.PhysicsVector
 class PhysicalObject(var location: PhysicsVector, var velocity: PhysicsVector) extends GameObject {
 
   def onGround(): Unit = {}

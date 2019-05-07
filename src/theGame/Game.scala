@@ -12,6 +12,12 @@ class Game {
   val Width: Double = 20
   val Height: Double = 30
   var Line: Double = -0.3
+  def loadGrid(): Unit = {
+    world.boundaries = List()
+    blobs = List()
+    grid.blobLocations.foreach(blob => placeBlob(blob.x, blob.y))
+    players.values.foreach(player => player.location = spawn())
+  }
   def placeBlob(x: Int, y: Int): Unit = {
     blobs = new Blob(x, y) :: blobs
   }

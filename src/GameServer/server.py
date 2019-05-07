@@ -81,13 +81,9 @@ def key_state(jsonKeyStates):
     send_to_scala(message)
 
 
-@app.route('/game', methods=["POST", "GET"])
-def game():
-    if request.method == "POST":
-        username = request.form.get('username')
-    else:
-        username = "guest" + str(randint(0, 100000))
-    return render_template('home.html', username=username)
+@app.route('/')
+def index():
+    return send_from_directory('static', 'index.html')
 
 
 @app.route('/<path:filename>')

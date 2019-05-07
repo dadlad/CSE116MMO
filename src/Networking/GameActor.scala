@@ -1,10 +1,13 @@
 package Networking
 import physics.PhysicsVector
-import akka.actor.{Actor, ActorRef, PoisonPill, Props}
+import akka.actor.{Actor, ActorRef}
 import theGame.Game
 class GameActor extends Actor {
   var players: Map[String, ActorRef] = Map()
   val game: Game = new Game
+  def Grid(): Unit = {
+    game.loadGrid()
+  }
   override def receive: Receive = {
     case message: AddPlayer => game.addPlayer(message.username)
     case message: RemovePlayer => game.removePlayer(message.username)
@@ -12,5 +15,8 @@ class GameActor extends Actor {
     case message: StopPlayer => game.players(message.username).stop()
     case UpdateGame =>
       game.update()
+    case SendGameState => sender() ! GameState(game.gameState())
+    case LoadGrid =>
+      game.loadGrid()
   }
 }
